@@ -26,7 +26,7 @@
 1. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/AndreyPrima/PSDToPNG.git
-   cd psd-to-image-converter
+   cd PSDToPNG
    ```
 2. Установите необходимые зависимости:
    ```bash
@@ -73,7 +73,7 @@
 1. Клонуйте репозиторій:
    ```bash
    git clone https://github.com/AndreyPrima/PSDToPNG.git
-   cd psd-to-image-converter
+   cd PSDToPNG
    ```
 2. Встановіть необхідні залежності:
    ```bash
@@ -120,7 +120,7 @@ A simple and efficient tool to convert PSD files to various image formats such a
 1. Clone the repository:
    ```bash
    git clone https://github.com/AndreyPrima/PSDToPNG.git
-   cd psd-to-image-converter
+   cd PSDToPNG
    ```
 2. Install the required dependencies:
    ```bash
