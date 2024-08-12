@@ -1,5 +1,6 @@
 import sys
 import os
+import warnings
 from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, 
                              QProgressBar, QComboBox, QMessageBox, QCheckBox, QGroupBox, 
                              QRadioButton, QSpinBox, QHBoxLayout)
@@ -9,9 +10,12 @@ from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 from Language import Language
 
+# Ignore deprecated warnings related to PyQt5
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="PyQt5")
+
 class PSDtoImageConverter(QWidget):
     """Main widget for converting PSD files to other image formats."""
-    
+
     def __init__(self, language='en'):
         super().__init__()
         self.last_input_dir = QDir.homePath()
@@ -23,7 +27,7 @@ class PSDtoImageConverter(QWidget):
         """Initialize the user interface."""
         layout = QVBoxLayout()
 
-        # Label and buttons for directory selection
+        # Directory selection
         self.label = QLabel(self.lang.get_text('select_directory'), self)
         layout.addWidget(self.label)
 
@@ -36,13 +40,13 @@ class PSDtoImageConverter(QWidget):
         self.outputButton.setEnabled(False)
         layout.addWidget(self.outputButton)
 
-        # Conversion settings group
+        # Conversion settings
         self.createConversionOptions(layout)
 
-        # Theme selection group
+        # Theme selection
         self.createThemeOptions(layout)
 
-        # Language selection group
+        # Language selection
         self.createLanguageOptions(layout)
 
         # Convert button
@@ -172,12 +176,8 @@ class PSDtoImageConverter(QWidget):
     def switchLanguage(self):
         """Switch the language of the application based on user selection."""
         selected_language = self.languageComboBox.currentText()
-        if selected_language == "English":
-            self.lang.set_language('en')
-        elif selected_language == "Русский":
-            self.lang.set_language('ru')
-        elif selected_language == "Українська":
-            self.lang.set_language('uk')
+        lang_code = {'English': 'en', 'Русский': 'ru', 'Українська': 'uk'}
+        self.lang.set_language(lang_code.get(selected_language, 'en'))
         self.updateUI()
 
     def updateConversionOptions(self):
@@ -190,7 +190,8 @@ class PSDtoImageConverter(QWidget):
             self.qualitySpinBox.setVisible(False)
 
     def updateUI(self):
-        """Update the text of all UI elements to match the selected language."""
+        """Update all text elements based on the current language."""
+        self.setWindowTitle(self.lang.get_text('convert_psd_to_image'))
         self.label.setText(self.lang.get_text('select_directory'))
         self.selectButton.setText(self.lang.get_text('select_directory'))
         self.outputButton.setText(self.lang.get_text('select_output_directory'))
@@ -203,15 +204,22 @@ class PSDtoImageConverter(QWidget):
         self.darkThemeRadioButton.setText(self.lang.get_text('dark_theme'))
         self.languageGroup.setTitle(self.lang.get_text('language_selection'))
         self.convertButton.setText(self.lang.get_text('convert_psd_to_image'))
-        self.setWindowTitle(self.lang.get_text('convert_psd_to_image'))
 
     def startConversion(self):
         """Start the conversion process in a separate thread."""
+        if not self.last_input_dir or not self.last_output_dir:
+            QMessageBox.warning(self, self.lang.get_text('missing_directories'), self.lang.get_text('please_select_directories'))
+            return
+
         self.progressBar.setVisible(True)
-        self.conversionThread = PSDConversionThread(self.last_input_dir, self.last_output_dir,
-                                                    self.formatComboBox.currentText().lower(),
-                                                    self.qualitySpinBox.value() if self.formatComboBox.currentText() == "JPEG" else None,
-                                                    self.loggingCheckBox.isChecked())
+        self.progressBar.setValue(0)
+        self.conversionThread = PSDConversionThread(
+            self.last_input_dir,
+            self.last_output_dir,
+            self.formatComboBox.currentText().lower(),
+            self.qualitySpinBox.value() if self.formatComboBox.currentText() == "JPEG" else None,
+            self.loggingCheckBox.isChecked()
+        )
         self.conversionThread.progressUpdated.connect(self.progressBar.setValue)
         self.conversionThread.conversionCompleted.connect(self.onConversionComplete)
         self.conversionThread.start()
@@ -227,7 +235,7 @@ class PSDtoImageConverter(QWidget):
 
 class PSDConversionThread(QThread):
     """Thread for converting PSD files to images."""
-    
+
     progressUpdated = pyqtSignal(int)
     conversionCompleted = pyqtSignal(bool, list)
 
