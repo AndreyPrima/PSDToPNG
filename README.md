@@ -12,9 +12,9 @@
 - Выбор светлой и темной темы для GUI.
 
 ### Скриншоты
-![Светлая тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Light_Theme.png/)
+![Светлая тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/ruLight_Theme.png/)
 
-![Темная тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Black_Theme.png/)
+![Темная тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/ruBlack_Theme.png/)
 
 ### Требования
 - Python 3.6+
@@ -59,9 +59,9 @@
 - Вибір світлої та темної теми для GUI.
 
 ### Скриншоти
-![Світла тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Light_Theme.png/)
+![Світла тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/uaLight_Theme.png/)
 
-![Темна тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Black_Theme.png/)
+![Темна тема](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/uaBlack_Theme.png/)
 
 ### Вимоги
 - Python 3.6+
