@@ -10,9 +10,9 @@ A simple and efficient tool to convert PSD files to various image formats such a
 - Light and dark theme options for the GUI.
 
 ## Screenshots
-![Light Theme]((https://imgur.com/a/pwbNJDE))
+![Light Theme](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Light_Theme.png/)
 
-![Dark Theme]((https://imgur.com/a/bxhGq6i))
+![Dark Theme](https://github.com/AndreyPrima/PSDToPNG/raw/main/Screenshots/Dark_Theme.png/)
 
 ## Requirements
 - Python 3.6+
