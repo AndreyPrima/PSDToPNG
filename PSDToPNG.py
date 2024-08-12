@@ -115,7 +115,7 @@ class PSDtoImageConverter(QWidget):
         languageLayout = QHBoxLayout()
 
         self.languageComboBox = QComboBox(self)
-        self.languageComboBox.addItems(["English", "Russian"])
+        self.languageComboBox.addItems(["English", "Русский", "Українська"])
         self.languageComboBox.currentIndexChanged.connect(self.switchLanguage)
         languageLayout.addWidget(self.languageComboBox)
 
@@ -141,7 +141,7 @@ class PSDtoImageConverter(QWidget):
         if self.darkThemeRadioButton.isChecked():
             palette.setColor(QPalette.Window, QColor(53, 53, 53))
             palette.setColor(QPalette.WindowText, Qt.white)
-            palette.setColor(QPalette.Base, QColor(25, 25, 25))
+            palette.setColor(QPalette.Base, QColor(35, 35, 35))
             palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
             palette.setColor(QPalette.ToolTipBase, Qt.white)
             palette.setColor(QPalette.ToolTipText, Qt.white)
@@ -150,27 +150,47 @@ class PSDtoImageConverter(QWidget):
             palette.setColor(QPalette.ButtonText, Qt.white)
             palette.setColor(QPalette.BrightText, Qt.red)
             palette.setColor(QPalette.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.HighlightedText, Qt.black)
         else:
-            palette = QApplication.style().standardPalette()
-        self.setPalette(palette)
-
-    def updateConversionOptions(self):
-        """Update conversion settings based on the selected format."""
-        is_jpeg = self.formatComboBox.currentText() == "JPEG"
-        self.qualityLabel.setVisible(is_jpeg)
-        self.qualitySpinBox.setVisible(is_jpeg)
+            palette.setColor(QPalette.Window, Qt.white)
+            palette.setColor(QPalette.WindowText, Qt.black)
+            palette.setColor(QPalette.Base, Qt.white)
+            palette.setColor(QPalette.AlternateBase, QColor(240, 240, 240))
+            palette.setColor(QPalette.ToolTipBase, Qt.black)
+            palette.setColor(QPalette.ToolTipText, Qt.black)
+            palette.setColor(QPalette.Text, Qt.black)
+            palette.setColor(QPalette.Button, QColor(240, 240, 240))
+            palette.setColor(QPalette.ButtonText, Qt.black)
+            palette.setColor(QPalette.BrightText, Qt.red)
+            palette.setColor(QPalette.Link, QColor(42, 130, 218))
+            palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+            palette.setColor(QPalette.HighlightedText, Qt.white)
+        
+        QApplication.setPalette(palette)
 
     def switchLanguage(self):
-        """Switch the application language based on user selection."""
-        selected_language = self.languageComboBox.currentText().lower()
-        if selected_language == "english":
+        """Switch the language of the application based on user selection."""
+        selected_language = self.languageComboBox.currentText()
+        if selected_language == "English":
             self.lang.set_language('en')
-        elif selected_language == "russian":
+        elif selected_language == "Русский":
             self.lang.set_language('ru')
+        elif selected_language == "Українська":
+            self.lang.set_language('uk')
         self.updateUI()
 
+    def updateConversionOptions(self):
+        """Update options based on the selected output format."""
+        if self.formatComboBox.currentText() == "JPEG":
+            self.qualityLabel.setVisible(True)
+            self.qualitySpinBox.setVisible(True)
+        else:
+            self.qualityLabel.setVisible(False)
+            self.qualitySpinBox.setVisible(False)
+
     def updateUI(self):
-        """Update the UI text to match the selected language."""
+        """Update the text of all UI elements to match the selected language."""
         self.label.setText(self.lang.get_text('select_directory'))
         self.selectButton.setText(self.lang.get_text('select_directory'))
         self.outputButton.setText(self.lang.get_text('select_output_directory'))
@@ -186,13 +206,8 @@ class PSDtoImageConverter(QWidget):
         self.setWindowTitle(self.lang.get_text('convert_psd_to_image'))
 
     def startConversion(self):
-        """Start the PSD to image conversion process."""
+        """Start the conversion process in a separate thread."""
         self.progressBar.setVisible(True)
-        self.progressBar.setValue(0)
-        self.progressBar.setFormat('%p%')
-        self.progressBar.setAlignment(Qt.AlignCenter)
-
-        # Create and start the thread for conversion
         self.conversionThread = PSDConversionThread(self.last_input_dir, self.last_output_dir,
                                                     self.formatComboBox.currentText().lower(),
                                                     self.qualitySpinBox.value() if self.formatComboBox.currentText() == "JPEG" else None,
@@ -263,6 +278,8 @@ if __name__ == '__main__':
     locale = QLocale.system().name()
     if locale.startswith('ru'):
         translator.load("ru.qm")
+    elif locale.startswith('uk'):
+        translator.load("uk.qm")
     else:
         translator.load("en.qm")
     app.installTranslator(translator)
